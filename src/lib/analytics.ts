@@ -72,7 +72,7 @@ export function track<E extends EventName>(event: E, ...args: EventArgs<E>): voi
   const properties = args[0];
 
   if (!initialized) {
-    console.info('[analytics:dry-run]', event, {
+    console.info('[analytics dry-run]', event, {
       ...properties,
       current_page: currentPage,
     });
@@ -85,7 +85,7 @@ export function track<E extends EventName>(event: E, ...args: EventArgs<E>): voi
 /** userId inicial pseudoaleatorio, sin user properties todavia. */
 export function setAnalyticsUserId(userId: string): void {
   if (!initialized) {
-    console.info('[analytics:dry-run] setUserId', userId);
+    console.info('[analytics dry-run] setUserId', userId);
     return;
   }
   amplitude.setUserId(userId);
@@ -97,7 +97,7 @@ export function identifySimulatedUser(
   properties: SimulatedUserProperties,
 ): void {
   if (!initialized) {
-    console.info('[analytics:dry-run] identify', userId, properties);
+    console.info('[analytics dry-run] identify', userId, properties);
     return;
   }
 

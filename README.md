@@ -143,8 +143,10 @@ mano (`workflow_dispatch`).
 
 Dos detalles que hacen que funcione bajo un subdirectorio:
 
-- `base: '/Demo_Datafy/'` en `vite.config.ts` — **si renombras el repo, hay que
-  cambiarlo aquí**, o los assets darán 404.
+- `base: '/demo_datafy/'` en `vite.config.ts` — tiene que coincidir
+  **exactamente** con el nombre del repo, mayúsculas incluidas: las rutas de
+  Pages distinguen el caso. Si renombras el repo, hay que cambiarlo aquí, o los
+  assets darán 404.
 - Routing por hash propio (`#/`, `#/playlist/:id`, `#/search`), sin
   react-router: Pages sirve un único `index.html`, y el hash evita el 404 al
   recargar en una ruta profunda.
@@ -168,11 +170,16 @@ En el repo: **Settings → Pages → Build and deployment → Source: GitHub
 Actions**. No hace falta elegir rama ni carpeta; el propio workflow publica el
 artefacto.
 
+Esto es importante y es el fallo fácil: con la opción por defecto (*Deploy from
+a branch*) Pages sirve la **raíz del repo tal cual**, es decir el `index.html`
+sin construir, que apunta a `/src/main.tsx`. El navegador no sabe ejecutar TSX,
+así que se ve una página en blanco aunque el repo esté perfecto.
+
 ### 3. Comprobar
 
-Tras el primer push a `main`, la pestaña **Actions** muestra los dos jobs
+Tras el primer push a `master`, la pestaña **Actions** muestra los dos jobs
 (`build` y `deploy`) y el job de deploy imprime la URL final:
-`https://<tu-usuario>.github.io/Demo_Datafy/`
+`https://pedroasenjo-amplitude.github.io/demo_datafy/`
 
 ---
 

@@ -2,7 +2,9 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    # La rama por defecto de este repo es `master`; se deja `main` tambien para
+    # que el workflow siga valiendo si algun dia se renombra.
+    branches: [master, main]
   workflow_dispatch:
 
 # Permisos minimos: solo leer el repo y publicar en Pages via OIDC.
