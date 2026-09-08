@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 
+import { LibraryPanel } from './components/LibraryPanel';
 import { PlayerBar } from './components/PlayerBar';
-import { Sidebar } from './components/Sidebar';
+import { TopBar } from './components/TopBar';
 import { YouTubeHost } from './components/YouTubeHost';
 import { setCurrentPage, track } from './lib/analytics';
 import { routeToPageName, useRoute, type Route } from './router/useRoute';
@@ -22,7 +23,7 @@ function CurrentView({
     case 'playlist':
       return <PlaylistView playlistId={route.playlistId} />;
     case 'search':
-      return <SearchView />;
+      return <SearchView navigate={navigate} />;
   }
 }
 
@@ -38,36 +39,22 @@ export function App(): JSX.Element {
   }, [pageName]);
 
   return (
-    <div className="flex h-screen flex-col bg-surface-base text-neutral-200">
-      <div className="flex min-h-0 flex-1">
-        <Sidebar route={route} navigate={navigate} />
+    // Fondo negro con paneles redondeados flotando encima, como el Spotify
+    // actual: top bar arriba, biblioteca + contenido en medio, player abajo.
+    <div className="flex h-screen flex-col gap-2 bg-black p-2">
+      <TopBar route={route} navigate={navigate} />
 
-        <main className="min-w-0 flex-1 overflow-y-auto px-4 py-6 sm:px-6">
-          {/* En movil no hay sidebar: navegacion minima arriba. */}
-          <div className="mb-4 flex gap-2 md:hidden">
-            <button
-              type="button"
-              onClick={() => {
-                navigate({ name: 'home' });
-              }}
-              className="rounded-full bg-surface-raised px-4 py-1.5 text-sm text-neutral-300"
-            >
-              Inicio
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                navigate({ name: 'search' });
-              }}
-              className="rounded-full bg-surface-raised px-4 py-1.5 text-sm text-neutral-300"
-            >
-              Buscar
-            </button>
-          </div>
+      <div className="flex min-h-0 flex-1 gap-2">
+        <LibraryPanel route={route} navigate={navigate} />
 
+        <main
+          // `key` fuerza que el scroll vuelva arriba al cambiar de vista, que
+          // es lo que hace cualquier navegacion de verdad.
+          key={route.name === 'playlist' ? `playlist-${route.playlistId}` : route.name}
+          className="min-w-0 flex-1 overflow-y-auto rounded-lg bg-surface-base"
+        >
           <CurrentView route={route} navigate={navigate} />
         </main>
-
       </div>
 
       <PlayerBar />

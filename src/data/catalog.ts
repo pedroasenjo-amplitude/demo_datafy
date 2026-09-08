@@ -401,6 +401,13 @@ export function searchTracks(query: string): Track[] {
   );
 }
 
+/** "1 h 12 min" / "23 min", como la linea de metadatos de una playlist. */
+export function formatTotalDuration(totalSeconds: number): string {
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.round((totalSeconds % 3600) / 60);
+  return hours > 0 ? `${hours} h ${minutes} min` : `${minutes} min`;
+}
+
 export function formatDuration(totalSeconds: number): string {
   const safe = Number.isFinite(totalSeconds) && totalSeconds > 0 ? totalSeconds : 0;
   const minutes = Math.floor(safe / 60);

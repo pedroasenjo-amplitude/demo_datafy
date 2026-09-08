@@ -31,7 +31,7 @@ export function YouTubeHost(): JSX.Element {
   const { containerRef } = useYouTubePlayer(handlers);
 
   return (
-    <div className="fixed bottom-28 right-3 z-40 aspect-video w-28 overflow-hidden rounded-lg border border-white/10 bg-black shadow-xl sm:w-40">
+    <div className="fixed bottom-24 right-3 z-30 aspect-video w-28 overflow-hidden rounded-md bg-black shadow-2xl ring-1 ring-white/10 sm:w-36">
       <div ref={containerRef} className="h-full w-full" />
       <div className="absolute inset-0" aria-hidden="true" />
     </div>

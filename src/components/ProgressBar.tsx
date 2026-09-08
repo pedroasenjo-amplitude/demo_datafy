@@ -1,7 +1,10 @@
 import { formatDuration } from '../data/catalog';
 import { usePlayerStore } from '../store/usePlayerStore';
 
-/** Barra de progreso con seek. La posicion la alimenta el ticker del player. */
+/**
+ * Barra de progreso con seek. Relleno en azul de marca (#0052F2 puro, es un
+ * relleno y no texto) y el thumb aparece solo en hover, como en Spotify.
+ */
 export function ProgressBar(): JSX.Element {
   const positionSeconds = usePlayerStore((s) => s.positionSeconds);
   const durationSeconds = usePlayerStore((s) => s.durationSeconds);
@@ -13,8 +16,8 @@ export function ProgressBar(): JSX.Element {
   const percent = (value / max) * 100;
 
   return (
-    <div className="flex w-full items-center gap-2">
-      <span className="w-9 shrink-0 text-right text-[11px] tabular-nums text-neutral-400">
+    <div className="group flex w-full items-center gap-2">
+      <span className="w-10 shrink-0 text-right text-[11px] tabular-nums text-subdued">
         {formatDuration(positionSeconds)}
       </span>
 
@@ -29,13 +32,13 @@ export function ProgressBar(): JSX.Element {
         onChange={(event) => {
           seekTo(Number(event.target.value));
         }}
-        className="h-1 w-full cursor-pointer appearance-none rounded-full bg-neutral-700 accent-accent disabled:cursor-default [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"
+        className="h-1 w-full cursor-pointer appearance-none rounded-full disabled:cursor-default [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:opacity-0 [&::-webkit-slider-thumb]:transition-opacity group-hover:[&::-webkit-slider-thumb]:opacity-100"
         style={{
-          background: `linear-gradient(to right, #1ed787 ${percent}%, #404040 ${percent}%)`,
+          background: `linear-gradient(to right, #0052f2 ${percent}%, #4d4d4d ${percent}%)`,
         }}
       />
 
-      <span className="w-9 shrink-0 text-[11px] tabular-nums text-neutral-400">
+      <span className="w-10 shrink-0 text-[11px] tabular-nums text-subdued">
         {formatDuration(durationSeconds)}
       </span>
     </div>

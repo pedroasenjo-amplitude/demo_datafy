@@ -104,6 +104,51 @@ esto sería un porcentaje bajo.
 
 ---
 
+## Aspecto
+
+La interfaz imita al Spotify actual: fondo negro con paneles redondeados
+flotando encima, top bar con buscador centrado y avatar, panel "Tu biblioteca"
+con portadas, cabecera de playlist con degradado y titular enorme, botón de play
+que aparece deslizándose al hacer hover en las tarjetas, y barra de reproducción
+en tres zonas.
+
+### El azul, en dos valores
+
+El color de marca es **`#0052F2`**, pero no se puede usar para todo. Sobre el
+fondo `#121212` da un contraste de **2.7:1**, por debajo del mínimo de 4.5:1 que
+pide WCAG AA para texto. Así que hay dos tokens con papeles distintos:
+
+| Token | Valor | Uso |
+| --- | --- | --- |
+| `brand` | `#0052F2` | **Solo rellenos** con contenido blanco encima: botón de play, barra de progreso, volumen, degradados, tiles de categoría |
+| `brand-hover` | `#1A66FF` | Hover del botón de play |
+| `accent` | `#4D8CFF` | **Texto e iconos** de acento: título de la canción que suena, corazón marcado, ecualizador, estado activo. 6.4:1 sobre el fondo |
+
+Spotify hace exactamente lo mismo con su verde: el del botón y el del texto no
+son el mismo valor. Si algún día hay que cambiar el azul, se cambian los dos
+tokens en `tailwind.config.js` y nada más.
+
+Los grises son los de Spotify, neutros a propósito (`#121212` base, `#181818`
+paneles, `#242424` elevado, `#2A2A2A` hover): un fondo neutro hace que el azul
+salte más que un fondo azulado.
+
+### Dos detalles deliberados
+
+- **El play de la barra inferior es blanco, no azul.** Es así en Spotify: el
+  color de marca se reserva para el botón grande de las páginas. Mantenerlo
+  blanco es más fiel que "usar el azul en todas partes".
+- **La cabecera de playlist no tiene corazón.** En Spotify ese corazón guarda la
+  *playlist*, pero la taxonomía solo tiene `track_liked` con `track_id`.
+  Cablearlo al primer track sería disparar un evento que no corresponde, y en
+  una demo de instrumentación eso es peor que la falta de fidelidad. El corazón
+  vive en cada fila y en la barra inferior, donde sí mapea a una canción.
+
+La tipografía es la del sistema. Spotify usa Circular, que no es libre; la
+alternativa cercana sería cargar Inter desde Google Fonts, pero no compensa
+añadir una dependencia de red a una demo por eso.
+
+---
+
 ## Sobre el reproductor de YouTube
 
 `src/hooks/useYouTubePlayer.ts` es el **único** módulo de la app que sabe que
@@ -197,15 +242,24 @@ src/
 │  └─ analytics.ts           init, track(), identify y plugin de enrichment
 ├─ store/
 │  ├─ usePlayerStore.ts      cola, track actual, likes, historial + eventos
-│  └─ useUserStore.ts        userId simulado y cambio de persona
+│  ├─ useUserStore.ts        userId simulado y cambio de persona
+│  └─ useSearchStore.ts      query compartida entre el top bar y la vista
 ├─ hooks/
 │  ├─ useYouTubePlayer.ts    única frontera con la IFrame API
 │  └─ useDebouncedValue.ts
 ├─ router/useRoute.ts        routing por hash
 ├─ views/                    Home · PlaylistView · SearchView
-├─ components/               Sidebar · PlayerBar · TrackList · PlaylistCard ·
-│                            SearchBar · UserSwitcher · ProgressBar ·
-│                            VolumeControl · LikeButton · YouTubeHost
+├─ components/
+│  ├─ TopBar.tsx             logo, home, buscador, avatar
+│  ├─ LibraryPanel.tsx       "Tu biblioteca" con portadas
+│  ├─ PlayerBar.tsx          tres zonas: suena / controles / volumen
+│  ├─ TrackList.tsx          tabla con cabecera de columnas y hover
+│  ├─ PlaylistCard.tsx       tarjeta con play en hover
+│  ├─ PlaylistShortcut.tsx   tile horizontal del Home
+│  ├─ PlayButton.tsx         botón circular de marca (sm / lg)
+│  ├─ SearchBar.tsx · UserSwitcher.tsx · ProgressBar.tsx ·
+│  ├─ VolumeControl.tsx · LikeButton.tsx · YouTubeHost.tsx
+│  └─ icons.tsx              SVGs inline, fuera de los componentes
 └─ types/youtube.d.ts        declaraciones mínimas de la IFrame API
 ```
 

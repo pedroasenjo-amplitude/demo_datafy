@@ -1,15 +1,21 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
-import { SearchBar } from '../components/SearchBar';
 import { TrackList } from '../components/TrackList';
-import { searchTracks } from '../data/catalog';
+import { playlists, searchTracks } from '../data/catalog';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import { track } from '../lib/analytics';
+import type { Route } from '../router/useRoute';
+import { useSearchStore } from '../store/useSearchStore';
 
 const SEARCH_DEBOUNCE_MS = 350;
 
-export function SearchView(): JSX.Element {
-  const [query, setQuery] = useState('');
+interface SearchViewProps {
+  navigate: (route: Route) => void;
+}
+
+export function SearchView({ navigate }: SearchViewProps): JSX.Element {
+  // El input esta en el top bar; aqui solo se leen la query y los resultados.
+  const query = useSearchStore((s) => s.query);
   const debouncedQuery = useDebouncedValue(query, SEARCH_DEBOUNCE_MS);
 
   const results = useMemo(() => searchTracks(debouncedQuery), [debouncedQuery]);
@@ -25,31 +31,60 @@ export function SearchView(): JSX.Element {
 
   const hasQuery = debouncedQuery.trim() !== '';
 
-  return (
-    <div className="flex flex-col gap-6">
-      <div className="max-w-md">
-        <SearchBar value={query} onChange={setQuery} />
+  // Sin query, Spotify muestra las categorias para explorar.
+  if (!hasQuery) {
+    return (
+      <div className="px-6 pb-10 pt-6">
+        <h1 className="mb-4 text-2xl font-bold tracking-tight text-white">
+          Explorar todo
+        </h1>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
+          {playlists.map((playlist) => (
+            <button
+              key={playlist.id}
+              type="button"
+              onClick={() => {
+                navigate({ name: 'playlist', playlistId: playlist.id });
+              }}
+              className="relative aspect-[1.6] overflow-hidden rounded-lg bg-brand p-4 text-left transition hover:brightness-110"
+            >
+              <span className="text-xl font-bold tracking-tight text-white">
+                {playlist.genre}
+              </span>
+              <img
+                src={playlist.coverUrl}
+                alt=""
+                loading="lazy"
+                className="absolute -bottom-2 -right-4 h-20 w-20 rotate-[25deg] rounded object-cover shadow-xl"
+              />
+            </button>
+          ))}
+        </div>
       </div>
+    );
+  }
 
-      {!hasQuery && (
-        <p className="text-sm text-neutral-500">
-          Busca por titulo, artista o genero. Prueba con &quot;rock&quot; o &quot;Adele&quot;.
-        </p>
-      )}
-
-      {hasQuery && results.length === 0 && (
-        <p className="text-sm text-neutral-500">
-          Sin resultados para &quot;{debouncedQuery.trim()}&quot;.
-        </p>
-      )}
-
-      {results.length > 0 && (
-        <section>
-          <h2 className="mb-3 text-sm text-neutral-400">
+  return (
+    <div className="px-6 pb-10 pt-6">
+      {results.length === 0 ? (
+        <>
+          <h1 className="text-2xl font-bold tracking-tight text-white">
+            No hay resultados para &quot;{debouncedQuery.trim()}&quot;
+          </h1>
+          <p className="mt-3 text-sm text-subdued">
+            Comprueba que las palabras esten bien escritas o prueba con otros terminos.
+          </p>
+        </>
+      ) : (
+        <>
+          <h1 className="mb-4 text-2xl font-bold tracking-tight text-white">
+            Canciones
+          </h1>
+          <p className="mb-4 text-sm text-subdued">
             {results.length} {results.length === 1 ? 'resultado' : 'resultados'}
-          </h2>
+          </p>
           <TrackList tracks={results} source="search" />
-        </section>
+        </>
       )}
     </div>
   );
