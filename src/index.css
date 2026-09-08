@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-surface-base text-neutral-200 antialiased;
+  }
+
+  /* El thumb de los range en Firefox no hereda del pseudo de WebKit. */
+  input[type='range']::-moz-range-thumb {
+    height: 0.75rem;
+    width: 0.75rem;
+    border: none;
+    border-radius: 9999px;
+    background: #ffffff;
+  }
+}

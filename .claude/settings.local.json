@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm -v)",
+      "Read(//Users/pedroespigaresasenjo/**)",
+      "Read(//Users/pedroespigaresasenjo/.nvm/versions/**)",
+      "Read(//opt/homebrew/bin/**)",
+      "Read(//Applications/**)"
+    ]
+  }
+}
