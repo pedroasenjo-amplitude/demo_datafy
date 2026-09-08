@@ -1,2 +1,12 @@
+# Casa de los ajustes de pnpm desde la version 10: el campo "pnpm" de
+# package.json ya no se lee (pnpm avisa y lo ignora).
+#
+# esbuild (dependencia de Vite) trae un script de instalacion, y pnpm no
+# ejecuta scripts de dependencias salvo que se autoricen explicitamente. Sin
+# esta linea el install falla con ERR_PNPM_IGNORED_BUILDS.
+#
+# La clave se llama `allowBuilds` en pnpm 12+ (en pnpm 10 y 11 era
+# `onlyBuiltDependencies`). El workflow fija pnpm 12.3.4 para que CI use
+# exactamente la version con la que se ha probado esto.
 allowBuilds:
-  esbuild: set this to true or false
+  esbuild: true
